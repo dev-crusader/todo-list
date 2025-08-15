@@ -4,6 +4,7 @@ import TodoItem from "./components/TodoItem";
 import CreateTodo from "./components/CreateTodo";
 import EditTodo from "./components/EditTodo";
 import Login from "./components/Login";
+import Signup from "./components/Signup";
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/todos/new" element={<CreateTodo />} />
         <Route path="/todos/:id/edit" element={<EditTodo />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
     </Router>
   );
