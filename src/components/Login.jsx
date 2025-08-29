@@ -1,25 +1,26 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, TextField, Typography, Alert } from "@mui/material";
+import { login } from "../services/AuthService";
+import { useAuth } from "../AuthContext";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [token, setToken] = useState("");
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const { setToken } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     try {
-      // TODO: Call the login function with username and password
-      // TODO: If the response contains a access_token field, store it in the token state
-      // TODO: If no token is received, set an error message
-      const response = await login(username, password);
-      if (response["access_token"]) {
-        setToken(response["access_token"]);
+      const data = await login(username, password);
+      if (data.access_token) {
+        setToken(data.access_token);
+        navigate("/todos");
       } else {
-        setError("No token received");
+        setError(data.error || "Login failed");
       }
     } catch (error) {
       setError("An error occurred during login");
@@ -50,10 +51,6 @@ const Login = () => {
           Login
         </Button>
       </form>
-      {token && <Typography variant="h3">{token}</Typography>}
-      <Typography variant="body1">
-        Don't have an account? <Link to="/signup">Sign up</Link>
-      </Typography>
     </div>
   );
 };

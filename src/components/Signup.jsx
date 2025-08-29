@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, TextField, Typography, Alert } from "@mui/material";
 import { signup } from "../services/AuthService";
 
@@ -7,19 +7,22 @@ const Signup = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [message, setMessage] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setMessage("");
+    setSuccess(false);
     try {
       const response = await signup(username, password);
       if (response.error) {
         setError(response.error);
       } else {
-        setError("");
-        setMessage("Todo created successfully!");
+        setSuccess(true);
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
       }
     } catch (error) {
       setError("An error occurred during signup");
@@ -30,7 +33,11 @@ const Signup = () => {
     <div>
       <Typography variant="h4">Sign Up</Typography>
       {error && <Alert severity="error">{error}</Alert>}
-      {message && <Alert severity="success">{message}</Alert>}
+      {success && (
+        <Alert severity="success">
+          Signup successful! Redirecting to login...
+        </Alert>
+      )}
       <form onSubmit={handleSubmit}>
         <TextField
           label="Username"
@@ -51,9 +58,6 @@ const Signup = () => {
           Sign Up
         </Button>
       </form>
-      <Typography variant="body1">
-        Already have an account? <Link to="/login">Login</Link>
-      </Typography>
     </div>
   );
 };
