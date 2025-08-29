@@ -1,21 +1,26 @@
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import TodoDetails from "./TodoDetails";
-import { getTodoById } from "../services/TodoService";
-import { Typography } from "@mui/material";
-import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useTodoService } from "../services/TodoService";
+import { Typography, Alert } from "@mui/material";
 
 const TodoItem = () => {
   const { id } = useParams();
   const [todo, setTodo] = useState(null);
   const [error, setError] = useState(null);
+  const todoService = useTodoService();
 
   useEffect(() => {
     const fetchTodo = async () => {
       try {
-        const data = await getTodoById(parseInt(id));
-        setTodo(data);
+        const data = await todoService.getTodoById(parseInt(id));
+        if (data?.error) {
+          setError("An error occurred while fetching data");
+        } else {
+          setTodo(data);
+        }
       } catch (error) {
-        setError(error);
+        setError("An error occurred while fetching data");
       }
     };
     fetchTodo();
@@ -25,7 +30,11 @@ const TodoItem = () => {
     <div>
       <Typography variant="h3">Todo Item</Typography>
       {error && <Alert severity="error">{error}</Alert>}
-      <TodoDetails todo={todo} />
+      {todo ? (
+        <TodoDetails todo={todo} />
+      ) : (
+        <Typography variant="h6">Todo Item Not Found</Typography>
+      )}
     </div>
   );
 };
