@@ -1,26 +1,31 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { useTodoService } from "../services/TodoService";
 import { useNavigate } from "react-router-dom";
-import { createTodo } from "../services/TodoService";
 import { Button, TextField, Typography, Alert } from "@mui/material";
 
-const CreateNewTodo = () => {
+const CreateTodo = () => {
   const [title, setTitle] = useState("");
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const todoService = useTodoService();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await createTodo(title);
-      setTitle("");
-      setSuccess(true);
-      setTimeout(() => {
-        setSuccess(false);
-        navigate("/todos");
-      }, 2000);
+      const response = await todoService.createTodo(title);
+      if (!response?.error) {
+        setTitle("");
+        setSuccess(true);
+        setTimeout(() => {
+          setSuccess(false);
+          navigate("/todos");
+        }, 2000);
+      } else {
+        setError("Failed to create a new todo item");
+      }
     } catch (error) {
-      setError(error);
+      setError("An error occurred while creating the todo");
     }
   };
 
@@ -46,4 +51,4 @@ const CreateNewTodo = () => {
   );
 };
 
-export default CreateNewTodo;
+export default CreateTodo;

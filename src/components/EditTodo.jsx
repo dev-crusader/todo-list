@@ -1,5 +1,4 @@
-import { getTodoById, updateTodo } from "../services/TodoService";
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Button,
@@ -9,6 +8,7 @@ import {
   Checkbox,
   Alert,
 } from "@mui/material";
+import { useTodoService } from "../services/TodoService";
 
 const EditTodo = () => {
   const { id } = useParams();
@@ -17,15 +17,20 @@ const EditTodo = () => {
   const [done, setDone] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const todoService = useTodoService();
 
   useEffect(() => {
     const fetchTodo = async () => {
       try {
-        const data = await getTodoById(parseInt(id));
-        setTitle(data.title);
-        setDone(data.done);
+        const data = await todoService.getTodoById(parseInt(id));
+        if (data?.error) {
+          setError("Couldn't fetch the todo item");
+        } else {
+          setTitle(data.title);
+          setDone(data.done);
+        }
       } catch (error) {
-        setError(error);
+        setError("An error occurred while fetching data");
       }
     };
     fetchTodo();
@@ -34,14 +39,14 @@ const EditTodo = () => {
   const handleEdit = async (e) => {
     e.preventDefault();
     try {
-      await updateTodo(parseInt(id), { title, done });
+      await todoService.updateTodo(parseInt(id), { title, done });
       setSuccess(true);
       setTimeout(() => {
         setSuccess(false);
         navigate("/todos");
       }, 2000);
     } catch (error) {
-      setError(error);
+      setError("An error occurred while updating the todo");
     }
   };
 
@@ -49,7 +54,7 @@ const EditTodo = () => {
     <div>
       <Typography variant="h4">Edit Todo</Typography>
       {error && <Alert severity="error">{error}</Alert>}
-      {success && <Alert severity="success">Successfully edited!!</Alert>}
+      {success && <Alert severity="success">Todo updated successfully!</Alert>}
       <form onSubmit={handleEdit}>
         <TextField
           label="New Title"
@@ -67,7 +72,12 @@ const EditTodo = () => {
           }
           label="Completed"
         />
-        <Button variant="contained" color="primary" type="submit">
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          disabled={error}
+        >
           Save
         </Button>
       </form>
