@@ -12,6 +12,8 @@ import {
   Select,
   MenuItem,
   TextField,
+  Pagination,
+  Box,
 } from "@mui/material";
 import { useAuth } from "../AuthContext";
 
@@ -21,12 +23,19 @@ const Todos = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [searchTitle, setSearchTitle] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [todosPerPage, setTodosPerPage] = useState(5);
   const { token } = useAuth();
   const todoService = useTodoService();
 
   const fetchTodos = async () => {
     try {
-      const data = await todoService.getTodos(filter, searchTitle);
+      const data = await todoService.getTodos(
+        filter,
+        searchTitle,
+        currentPage,
+        todosPerPage
+      );
       if (!data?.error) {
         setTodos(data);
       } else {
@@ -43,7 +52,7 @@ const Todos = () => {
     if (token) {
       fetchTodos();
     }
-  }, [token, filter, searchTitle]);
+  }, [token, filter, searchTitle, currentPage, todosPerPage]);
 
   const handleDelete = async (id) => {
     try {
@@ -54,11 +63,17 @@ const Todos = () => {
     }
   };
 
+  const totalPages = Math.ceil(todos.length / todosPerPage);
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
+
   return (
     <div>
       <Typography variant="h2">Todos</Typography>
       {error && <Alert severity="error">{error}</Alert>}
-      {loading && <CircularProgress />}
+      {loading ? <CircularProgress /> : null}
 
       <TextField
         label="Search by title"
@@ -82,14 +97,42 @@ const Todos = () => {
         </Select>
       </FormControl>
 
-      {!loading && todos.length ? (
-        <List>
-          {todos.map((todo) => (
-            <ListItem key={todo.id} sx={{ width: "400px" }}>
-              <TodoDetails todo={todo} onDelete={handleDelete} />
-            </ListItem>
-          ))}
-        </List>
+      <FormControl
+        style={{ marginBottom: "20px", marginTop: "10px", minWidth: "120px" }}
+      >
+        <InputLabel>Items per page</InputLabel>
+        <Select
+          value={todosPerPage}
+          onChange={(e) => {
+            setTodosPerPage(Number(e.target.value));
+            setCurrentPage(1);
+          }}
+          label="Items per page"
+        >
+          <MenuItem value={5}>5</MenuItem>
+          <MenuItem value={10}>10</MenuItem>
+          <MenuItem value={20}>20</MenuItem>
+        </Select>
+      </FormControl>
+
+      {todos.length ? (
+        <>
+          <List>
+            {todos.map((todo) => (
+              <ListItem key={todo.id} sx={{ width: "400px" }}>
+                <TodoDetails todo={todo} onDelete={handleDelete} />
+              </ListItem>
+            ))}
+          </List>
+          <Box display="flex" justifyContent="center" mt={2}>
+            <Pagination
+              count={totalPages}
+              page={currentPage}
+              onChange={handlePageChange}
+              color="primary"
+            />
+          </Box>
+        </>
       ) : (
         <Typography variant="h6">No Todos Found</Typography>
       )}
