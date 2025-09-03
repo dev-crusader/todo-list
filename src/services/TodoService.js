@@ -51,7 +51,7 @@ export const useTodoService = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ title }),
+      body: JSON.stringify({ title, done: false }),
     });
     const data = await response.json();
     if (!response.ok) {

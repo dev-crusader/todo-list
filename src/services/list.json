@@ -1,4 +1,13 @@
 {
+  "users": [
+    {
+      "id": "1756875247095",
+      "username": "testuser",
+      "password": "$2b$12$QYb1RCfDM8kNFJM./3Q8geR2af63hYALx9WF4WMeWUvFkhtim1z16",
+      "createdAt": "2025-09-03T04:54:07.095Z",
+      "updatedAt": "2025-09-03T04:54:07.097Z"
+    }
+  ],
   "todos": [
     {
       "id": "1",
@@ -17,11 +26,18 @@
     },
     {
       "id": "b3dc",
-      "title": "Fullstack with Javascript"
+      "title": "Fullstack with Javascript",
+      "done": false
     },
     {
       "id": "9e1d",
-      "title": "Docker with CI/CD"
+      "title": "Docker with CI/CD",
+      "done": false
+    },
+    {
+      "title": "Clean house",
+      "done": false,
+      "id": "u3ag2J_"
     }
   ]
 }
