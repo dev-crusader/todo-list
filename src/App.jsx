@@ -40,7 +40,7 @@ const App = () => {
               <Button color="inherit" component={Link} to="/todos/new">
                 Create Todo
               </Button>
-              <Button color="inherit" onClick={() => handleLogout()}>
+              <Button color="inherit" onClick={handleLogout}>
                 Logout
               </Button>
             </>

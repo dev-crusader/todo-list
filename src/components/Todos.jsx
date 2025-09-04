@@ -25,21 +25,24 @@ const Todos = () => {
   const [searchTitle, setSearchTitle] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [todosPerPage, setTodosPerPage] = useState(5);
+  const [totalCount, setTotalCount] = useState(0);
   const { token } = useAuth();
   const todoService = useTodoService();
 
   const fetchTodos = async () => {
     try {
-      const data = await todoService.getTodos(
+      const result = await todoService.getTodos(
         filter,
         searchTitle,
         currentPage,
         todosPerPage
       );
-      if (!data?.error) {
-        setTodos(data);
+
+      if (!result?.error) {
+        setTodos(result.todos || []);
+        setTotalCount(result.totalCount || 0);
       } else {
-        setError(data.error);
+        setError(result.error);
       }
     } catch (error) {
       setError("An error occurred while fetching data");
@@ -63,9 +66,10 @@ const Todos = () => {
     }
   };
 
-  const totalPages = Math.ceil(todos.length / todosPerPage);
+  const totalPages = Math.ceil(totalCount / todosPerPage);
 
   const handlePageChange = (event, value) => {
+    setLoading(true);
     setCurrentPage(value);
   };
 
@@ -81,14 +85,20 @@ const Todos = () => {
         fullWidth
         margin="normal"
         value={searchTitle}
-        onChange={(e) => setSearchTitle(e.target.value)}
+        onChange={(e) => {
+          setSearchTitle(e.target.value);
+          setCurrentPage(1);
+        }}
       />
 
       <FormControl fullWidth margin="normal">
         <InputLabel>Filter Tasks</InputLabel>
         <Select
           value={filter}
-          onChange={(e) => setFilter(e.target.value)}
+          onChange={(e) => {
+            setFilter(e.target.value);
+            setCurrentPage(1);
+          }}
           label="Filter Tasks"
         >
           <MenuItem value="all">All</MenuItem>
@@ -115,6 +125,10 @@ const Todos = () => {
         </Select>
       </FormControl>
 
+      <Typography variant="body2" sx={{ mb: 2 }}>
+        Showing {todos.length} of {totalCount} todos
+      </Typography>
+
       {todos.length ? (
         <>
           <List>
@@ -124,14 +138,16 @@ const Todos = () => {
               </ListItem>
             ))}
           </List>
-          <Box display="flex" justifyContent="center" mt={2}>
-            <Pagination
-              count={totalPages}
-              page={currentPage}
-              onChange={handlePageChange}
-              color="primary"
-            />
-          </Box>
+          {totalPages > 1 && (
+            <Box display="flex" justifyContent="center" mt={2}>
+              <Pagination
+                count={totalPages}
+                page={currentPage}
+                onChange={handlePageChange}
+                color="primary"
+              />
+            </Box>
+          )}
         </>
       ) : (
         <Typography variant="h6">No Todos Found</Typography>
