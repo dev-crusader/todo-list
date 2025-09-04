@@ -12,7 +12,7 @@
     {
       "id": "1",
       "title": "Learn React framework",
-      "done": true
+      "done": false
     },
     {
       "id": "2",
@@ -21,7 +21,7 @@
     },
     {
       "id": "3",
-      "title": "Learn React Router",
+      "title": "Learn React Routers",
       "done": false
     },
     {
@@ -38,6 +38,66 @@
       "title": "Clean house",
       "done": false,
       "id": "u3ag2J_"
+    },
+    {
+      "title": "Pay bills",
+      "done": false,
+      "id": "8anorV6"
+    },
+    {
+      "title": "Do laundry",
+      "done": false,
+      "id": "ATAb2Q_"
+    },
+    {
+      "title": "Study for exam",
+      "done": false,
+      "id": "vZy62O4"
+    },
+    {
+      "title": "Buy movie ticket",
+      "done": false,
+      "id": "2UkFyqQ"
+    },
+    {
+      "title": "Cook food",
+      "done": false,
+      "id": "LjcbtO-"
+    },
+    {
+      "title": "Take a walk every day",
+      "done": false,
+      "id": "3DFAA2Y"
+    },
+    {
+      "title": "Learn Spanish",
+      "done": false,
+      "id": "224A3p5"
+    },
+    {
+      "title": "Learn driving",
+      "done": false,
+      "id": "8trf2p2"
+    },
+    {
+      "title": "Learning and Experimenting",
+      "done": false,
+      "id": "Y33GrxU"
+    },
+    {
+      "title": "Clean patio",
+      "done": false,
+      "id": "VJ-JUbB"
+    },
+    {
+      "title": "Join yoga classes",
+      "done": false,
+      "id": "KkQ0qJi"
+    },
+    {
+      "title": "Watch driving rules",
+      "done": false,
+      "id": "Jb_bdlo"
     }
   ]
 }

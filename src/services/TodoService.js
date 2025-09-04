@@ -3,7 +3,12 @@ import { useAuth } from "../AuthContext";
 export const useTodoService = () => {
   const { token } = useAuth();
 
-  const getTodos = async (filter = "all", searchTitle = "") => {
+  const getTodos = async (
+    filter = "all",
+    searchTitle = "",
+    page = 1,
+    limit = 5
+  ) => {
     let url = "/api/todos";
     let params = [];
 
@@ -13,9 +18,12 @@ export const useTodoService = () => {
       params.push("done=false");
     }
 
-    if (searchTitle.length > 0) {
-      params.push(`title=${encodeURIComponent(searchTitle)}`);
+    if (searchTitle) {
+      params.push(`title_like=${encodeURIComponent(searchTitle)}`);
     }
+
+    params.push(`_page=${page}`);
+    params.push(`_limit=${limit}`);
 
     if (params.length > 0) {
       url += "?" + params.join("&");
@@ -29,7 +37,13 @@ export const useTodoService = () => {
     if (!response.ok) {
       throw new Error("Failed to fetch todos");
     }
-    return response.json();
+
+    const data = await response.json();
+    const totalCount = response.headers.get("X-Total-Count");
+    return {
+      todos: data,
+      totalCount: parseInt(totalCount) || data.length,
+    };
   };
 
   const getTodoById = async (id) => {
