@@ -13,7 +13,7 @@ const TodoItem = () => {
   useEffect(() => {
     const fetchTodo = async () => {
       try {
-        const data = await todoService.getTodoById(parseInt(id));
+        const data = await todoService.getTodoById(id);
         if (data?.error) {
           setError("An error occurred while fetching data");
         } else {

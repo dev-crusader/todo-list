@@ -58,14 +58,19 @@ export const useTodoService = () => {
     return response.json();
   };
 
-  const createTodo = async (title) => {
+  const createTodo = async ({ title, description }) => {
     const response = await fetch("/api/todos", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ title, done: false }),
+      body: JSON.stringify({
+        title,
+        description,
+        done: false,
+        createdAt: new Date().toISOString(),
+      }),
     });
     const data = await response.json();
     if (!response.ok) {

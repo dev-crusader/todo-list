@@ -70,7 +70,7 @@ const EditTodo = () => {
 
     try {
       setError(null);
-      await todoService.updateTodo(parseInt(id), { title, done, description });
+      await todoService.updateTodo(id, { title, done, description });
       setSuccess(true);
       setTimeout(() => {
         navigate("/todos");
