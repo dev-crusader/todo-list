@@ -51,6 +51,7 @@ const Todos = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [todosPerPage, setTodosPerPage] = useState(5);
   const [totalCount, setTotalCount] = useState(0);
+  const [completeCount, setCompleteCount] = useState(0);
   const { token } = useAuth();
   const todoService = useTodoService();
   const [viewMode, setViewMode] = useState("list");
@@ -68,6 +69,7 @@ const Todos = () => {
       if (!result?.error) {
         setTodos(result.todos || []);
         setTotalCount(result.totalCount || 0);
+        setCompleteCount(result.completed || 0);
       } else {
         setError(result.error);
       }
@@ -154,7 +156,7 @@ const Todos = () => {
                     color="success.main"
                     fontWeight="bold"
                   >
-                    {todos.filter((t) => t.done).length}
+                    {completeCount}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Completed
@@ -168,7 +170,7 @@ const Todos = () => {
                     color="warning.main"
                     fontWeight="bold"
                   >
-                    {todos.filter((t) => !t.done).length}
+                    {totalCount - completeCount}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Pending

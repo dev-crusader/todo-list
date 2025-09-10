@@ -39,10 +39,13 @@ export const useTodoService = () => {
     }
 
     const data = await response.json();
+    const completeCount = data.filter((t) => t.done).length;
     const totalCount = response.headers.get("X-Total-Count");
+    console.log(completeCount);
     return {
       todos: data,
       totalCount: parseInt(totalCount) || data.length,
+      completed: completeCount,
     };
   };
 

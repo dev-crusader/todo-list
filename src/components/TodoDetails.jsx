@@ -90,7 +90,6 @@ const TodoDetails = ({ todo, onDelete, cardView = false, sx = {} }) => {
           ...sx,
         }}
       >
-        {/* Decorative corner element */}
         <Box
           sx={{
             position: "absolute",
@@ -142,7 +141,6 @@ const TodoDetails = ({ todo, onDelete, cardView = false, sx = {} }) => {
 
           <Divider sx={{ mb: 2, opacity: 0.5 }} />
 
-          {/* Title with subtle decoration */}
           <Box sx={{ position: "relative", mb: 2 }}>
             <Typography
               variant="h6"
@@ -170,7 +168,6 @@ const TodoDetails = ({ todo, onDelete, cardView = false, sx = {} }) => {
             </Typography>
           </Box>
 
-          {/* Description (if exists) */}
           {todo.description && (
             <Box
               sx={{
@@ -198,7 +195,6 @@ const TodoDetails = ({ todo, onDelete, cardView = false, sx = {} }) => {
             </Box>
           )}
 
-          {/* ID Badge with subtle gradient */}
           <Box sx={{ mt: "auto", pt: 2 }}>
             <Chip
               icon={<StarBorderIcon sx={{ fontSize: 14 }} />}
