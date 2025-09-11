@@ -3,6 +3,14 @@ import { useTodoService } from "../services/TodoService";
 import { useNavigate } from "react-router-dom";
 import TodoDetails from "./TodoDetails";
 import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Legend,
+  Tooltip,
+} from "recharts";
+import {
   Typography,
   Alert,
   CircularProgress,
@@ -52,10 +60,21 @@ const Todos = () => {
   const [todosPerPage, setTodosPerPage] = useState(5);
   const [totalCount, setTotalCount] = useState(0);
   const [completeCount, setCompleteCount] = useState(0);
+  const [pendingCount, setPendingCount] = useState(0);
   const { token } = useAuth();
   const todoService = useTodoService();
   const [viewMode, setViewMode] = useState("list");
   const navigate = useNavigate();
+  const [chartData, setChartData] = useState([]);
+  const COLORS = ["#287ceb", "#00C49F", "#f08e43"];
+
+  useEffect(() => {
+    setChartData([
+      { name: "Pending", value: pendingCount, color: COLORS[2] },
+      { name: "Completed", value: completeCount, color: COLORS[1] },
+      { name: "Total", value: totalCount, color: COLORS[0] },
+    ]);
+  }, [totalCount, completeCount, pendingCount]);
 
   const fetchTodos = async () => {
     try {
@@ -70,6 +89,7 @@ const Todos = () => {
         setTodos(result.todos || []);
         setTotalCount(result.totalCount || 0);
         setCompleteCount(result.completed || 0);
+        setPendingCount(result.pending || 0);
       } else {
         setError(result.error);
       }
@@ -138,43 +158,123 @@ const Todos = () => {
       <Box sx={{ mb: 4 }}>
         <Card elevation={2} sx={{ borderRadius: 3 }}>
           <CardContent sx={{ p: 3 }}>
-            <Grid container spacing={2} alignItems="center">
-              <Grid size={{ xs: 12, sm: 4 }}>
-                <Box textAlign="center">
-                  <Typography variant="h4" color="primary" fontWeight="bold">
-                    {totalCount}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Total Tasks
-                  </Typography>
+            <Grid container spacing={3} alignItems="center">
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Box sx={{ height: 200, width: "100%" }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={chartData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={40}
+                        outerRadius={70}
+                        paddingAngle={2}
+                        dataKey="value"
+                      >
+                        {chartData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(value) => [`${value} tasks`, "Count"]}
+                      />
+                      <Legend
+                        verticalAlign="bottom"
+                        height={36}
+                        formatter={(value, entry) => (
+                          <span
+                            style={{ color: entry.color, fontSize: "12px" }}
+                          >
+                            {value}
+                          </span>
+                        )}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
                 </Box>
               </Grid>
-              <Grid size={{ xs: 12, sm: 4 }}>
-                <Box textAlign="center">
+
+              <Grid size={{ xs: 12, md: 8 }}>
+                <Grid container spacing={2} alignItems="center">
+                  <Grid size={{ xs: 4 }}>
+                    <Box textAlign="center">
+                      <Typography
+                        variant="h4"
+                        color="primary"
+                        fontWeight="bold"
+                      >
+                        {totalCount}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Total Tasks
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid size={{ xs: 4 }}>
+                    <Box textAlign="center">
+                      <Typography
+                        variant="h4"
+                        color={COLORS[1]}
+                        fontWeight="bold"
+                      >
+                        {completeCount}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Completed
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid size={{ xs: 4 }}>
+                    <Box textAlign="center">
+                      <Typography
+                        variant="h4"
+                        color={COLORS[2]}
+                        fontWeight="bold"
+                      >
+                        {pendingCount}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Pending
+                      </Typography>
+                    </Box>
+                  </Grid>
+                </Grid>
+
+                <Box sx={{ mt: 3, px: 2 }}>
                   <Typography
-                    variant="h4"
-                    color="success.main"
-                    fontWeight="bold"
+                    variant="body2"
+                    color="text.secondary"
+                    gutterBottom
                   >
-                    {completeCount}
+                    Completion Progress:{" "}
+                    {totalCount > 0
+                      ? Math.round((completeCount / totalCount) * 100)
+                      : 0}
+                    %
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Completed
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid size={{ xs: 12, sm: 4 }}>
-                <Box textAlign="center">
-                  <Typography
-                    variant="h4"
-                    color="warning.main"
-                    fontWeight="bold"
+                  <Box
+                    sx={{
+                      width: "100%",
+                      height: 8,
+                      backgroundColor: "grey.200",
+                      borderRadius: 4,
+                      overflow: "hidden",
+                    }}
                   >
-                    {totalCount - completeCount}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Pending
-                  </Typography>
+                    <Box
+                      sx={{
+                        width: `${
+                          totalCount > 0
+                            ? (completeCount / totalCount) * 100
+                            : 0
+                        }%`,
+                        height: "100%",
+                        backgroundColor: COLORS[1],
+                        transition: "width 0.5s ease",
+                      }}
+                    />
+                  </Box>
                 </Box>
               </Grid>
             </Grid>

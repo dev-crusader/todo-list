@@ -141,7 +141,7 @@
     {
       "title": "Order groceries",
       "description": "Order some veggies and meat. Do not forget two bottles of milk.",
-      "done": false,
+      "done": true,
       "createdAt": "2025-09-05T05:11:52.356Z",
       "id": "OXsEBR3"
     },
