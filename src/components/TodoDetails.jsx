@@ -255,7 +255,7 @@ const TodoDetails = ({ todo, onDelete, cardView = false, sx = {} }) => {
                 px: 2,
                 textTransform: "none",
                 fontWeight: 500,
-                background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${accentColor})`,
+                background: `${theme.palette.primary.main}`,
                 boxShadow: `0 2px 8px ${alpha(
                   theme.palette.primary.main,
                   0.3

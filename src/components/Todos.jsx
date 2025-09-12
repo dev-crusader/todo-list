@@ -63,7 +63,7 @@ const Todos = () => {
   const [pendingCount, setPendingCount] = useState(0);
   const { token } = useAuth();
   const todoService = useTodoService();
-  const [viewMode, setViewMode] = useState("list");
+  const [viewMode, setViewMode] = useState("grid");
   const navigate = useNavigate();
   const [chartData, setChartData] = useState([]);
   const COLORS = ["#287ceb", "#00C49F", "#f08e43"];
@@ -352,17 +352,17 @@ const Todos = () => {
             <Grid size={{ xs: 12, md: 2 }}>
               <Box display="flex" justifyContent="center">
                 <IconButton
+                  color={viewMode === "grid" ? "primary" : "default"}
+                  onClick={() => setViewMode("grid")}
+                >
+                  <DashboardIcon />
+                </IconButton>
+                <IconButton
                   color={viewMode === "list" ? "primary" : "default"}
                   onClick={() => setViewMode("list")}
                   sx={{ mr: 1 }}
                 >
                   <ViewListIcon />
-                </IconButton>
-                <IconButton
-                  color={viewMode === "grid" ? "primary" : "default"}
-                  onClick={() => setViewMode("grid")}
-                >
-                  <DashboardIcon />
                 </IconButton>
               </Box>
             </Grid>
