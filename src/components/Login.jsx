@@ -9,7 +9,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { setToken } = useAuth();
+  const { setToken, setProfile } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,6 +18,7 @@ const Login = () => {
       const data = await login(username, password);
       if (data.access_token) {
         setToken(data.access_token);
+        setProfile(data.user.username);
         navigate("/todos");
       } else {
         setError(data.error || "Login failed");
