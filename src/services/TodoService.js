@@ -11,7 +11,7 @@ export const useTodoService = () => {
   ) => {
     let url = "/api/todos";
     let params = [];
-
+    let counterURL = url;
     if (filter === "completed") {
       params.push("done=true");
     } else if (filter === "pending") {
@@ -20,6 +20,10 @@ export const useTodoService = () => {
 
     if (searchTitle) {
       params.push(`title_like=${encodeURIComponent(searchTitle)}`);
+    }
+
+    if (params.length > 0) {
+      counterURL += "?" + params.join("&");
     }
 
     params.push(`_page=${page}`);
@@ -39,13 +43,26 @@ export const useTodoService = () => {
     }
 
     const data = await response.json();
-    const completeCount = data.filter((t) => t.done).length;
-    const totalCount = response.headers.get("X-Total-Count");
-    console.log(completeCount);
+
+    const res = await fetch(counterURL, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!res.ok) {
+      throw new Error("Failed to fetch todos");
+    }
+    const statCount = await res.json();
+
+    const completeCount = statCount.filter((t) => t.done).length;
+    const pendingCount = statCount.filter((t) => !t.done).length;
+    const totalCount = statCount.length;
+
     return {
       todos: data,
-      totalCount: parseInt(totalCount) || data.length,
+      totalCount: parseInt(totalCount),
       completed: completeCount,
+      pending: pendingCount,
     };
   };
 
